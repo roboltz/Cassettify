@@ -1,0 +1,37 @@
+# Cassettify
+
+Cassettify is an improvement over my old [EasyCassetteImages](https://github.com/roboltz/EasyCassetteImages) app
+which was able to create custom cassette covers for the rhythm shooter game [ROBOBEAT](https://store.steampowered.com/app/1456760/ROBOBEAT/).
+Cassettify improves on this app by featuring not only cassette cover creation, but full cassette creation.
+
+Full cassette creation means you can import a music file, give it a title and author, create a custom cassette cover, and define the beat positions, and then export as a .robobeat file that can be directly imported within the game.
+With the help of ffmpeg, the song file's metadata can also be extracted (if it has any) to get the songs title, author and cover image (which can be used within the cassette cover editor).
+the .flac file type is also supported while it is not in the game, as the app will simply convert the .flac into a .wav before archiving the final data into the .robobeat file. The Most important feature in this app is the
+automatic beat detection, which uses the Essentia audio tool library to find the positions of beats in a song. This is superior to the base game's beat detection, and on certain songs with clear beats, can be even better than cassettes made by people.
+The beat detection is great at finding the beats to old songs with inconsistent BPM, and not necessarily designed to find the beats to songs with consistent or unclear beats, Though an alternate beat detection method may be added.
+
+Looping is currently disabled because of a bug when importing the .robobeat file with already defined start and end times, but you can still test out the looping system on the Track page, it will just not work.
+
+## Screenshots
+Config:
+![Cassettify 03_10_2024 22_48_26](https://github.com/user-attachments/assets/0cf7a9b4-856c-4525-abb3-2d08d28acad1)
+Image of metadata pulled from one of [Pascal Michael Stiefel's](https://open.spotify.com/artist/3FU61shb6MdX8NLBnBauTI?si=Gke0s4uCSs6xX_mEjH4yIQ) songs from the [A Hat In Time OST](https://store.steampowered.com/app/356831/A_Hat_in_Time__Soundtrack/), Train Rush.
+
+Visual:
+![New File at _ · roboltz_Cassettify — Mozilla Firefox 03_10_2024 22_56_11](https://github.com/user-attachments/assets/ad58092a-5d14-4334-8622-4fa8d95a5186)
+Image for cassette cover pulled from pulled metadata on config page. (see above)
+
+Track:
+![Captures - File Explorer 03_10_2024 23_00_00](https://github.com/user-attachments/assets/803ebd32-8764-4449-b2d5-9e450f16ef04)
+After clicking the "Finds Beats" button the application will freeze for several seconds and show you the list of beats it found.
+
+![Captures - File Explorer 03_10_2024 23_01_51](https://github.com/user-attachments/assets/9c5ad79b-a310-4165-a0ef-8b7e9cbe7315)
+If you have a song selected, set a title and author (or selected the extracted title and author checkbox), added a cover (you can select the default checkbox as well), and found the beat positions, you will be able to export your cassette.
+
+
+## Planned Additions
+
+* Constant BPM mode. (for better support for most newer digital music)
+* RGBA selector for custom cassette color.
+* Fixing and reimplementing looping. (maybe, but I'm doubtful I could get it working)
+No plans on Linux support, unless ROBOBEAT adds Linux support.
