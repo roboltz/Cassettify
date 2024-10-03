@@ -1,0 +1,36 @@
+{
+    "File": {
+        "InternalName": "cassetteConfig",
+        "Info": {
+            "PathToAudioClip": "C:/Users/ethan/AppData/LocalLow/Inzanity/ROBOBEAT/cassette_audio/cassetteConfig_audio.ogg",
+            "InStorage": true,
+            "FileName": "cassetteConfig_audio.ogg",
+            "LengthOfClip": 0.0,
+            "PublicName": "PlaceHolderTitle",
+            "ArtistName": "PlaceHolderArtist",
+            "BPM": 0
+        },
+        "Beat": {
+            "StartTime": 0.0,
+            "EndTime": 0.0,
+            "VolumeOffset": 0.0,
+            "NumberOfBeats": 1,
+            "Beats": [
+                0
+            ]
+        },
+        "Visuals": {
+            "CassetteTextureInternalName": "a.png",
+            "CassetteColor": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0,
+                "a": 1.0
+            },
+            "CassetteStrength": 1.0,
+            "IsCustomTexture": true
+        },
+        "IsMixTape": false
+    },
+    "InternalName": "cassetteConfig"
+}
