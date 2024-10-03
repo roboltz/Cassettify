@@ -10,7 +10,7 @@ the .flac file type is also supported while it is not in the game, as the app wi
 automatic beat detection, which uses the Essentia audio tool library to find the positions of beats in a song. This is superior to the base game's beat detection, and on certain songs with clear beats, can be even better than cassettes made by people.
 The beat detection is great at finding the beats to old songs with inconsistent BPM, and not necessarily designed to find the beats to songs with consistent or unclear beats, Though an alternate beat detection method may be added.
 
-Looping is currently disabled because of a bug when importing the .robobeat file with already defined start and end times, but you can still test out the looping system on the Track page, it will just not work.
+Looping is currently disabled because of a bug when importing the .robobeat file with already defined start and end times, but you can still test out the looping system on the Track page, it will just not be exported.
 
 ## Screenshots
 Config:
@@ -28,6 +28,8 @@ After clicking the "Finds Beats" button the application will freeze for several 
 ![Captures - File Explorer 03_10_2024 23_01_51](https://github.com/user-attachments/assets/9c5ad79b-a310-4165-a0ef-8b7e9cbe7315)
 If you have a song selected, set a title and author (or selected the extracted title and author checkbox), added a cover (you can select the default checkbox as well), and found the beat positions, you will be able to export your cassette.
 
+After you import the robobeat file, you can play it like any other cassette!
+![ROBOBEAT 03_10_2024 23_33_43](https://github.com/user-attachments/assets/bed4ca83-4159-4a6b-9044-412b2b4907d4)
 
 ## Planned Additions
 
