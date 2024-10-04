@@ -7,8 +7,8 @@ Cassettify improves on this app by featuring not only cassette cover creation, b
 Full cassette creation means you can import a music file, give it a title and author, create a custom cassette cover, and define the beat positions, and then export as a .robobeat file that can be directly imported within the game.
 With the help of ffmpeg, the song file's metadata can also be extracted (if it has any) to get the songs title, author and cover image (which can be used within the cassette cover editor).
 the .flac file type is also supported while it is not in the game, as the app will simply convert the .flac into a .wav before archiving the final data into the .robobeat file. The Most important feature in this app is the
-automatic beat detection, which uses the Essentia audio tool library to find the positions of beats in a song. This is superior to the base game's beat detection, and on certain songs with clear beats, can be even better than cassettes made by people.
-The beat detection is great at finding the beats to old songs with inconsistent BPM, and not necessarily designed to find the beats to songs with consistent or unclear beats, Though an alternate beat detection method may be added.
+automatic beat detection, which uses part of the [Essentia](https://essentia.upf.edu) audio library to find the positions of beats in a song. This is superior to the base game's beat detection, and on certain songs with clear beats, can be even better than cassettes made by people.
+The beat detection is great at finding the beats to old songs with inconsistent BPM, and not necessarily designed to find the beats to songs with consistent or unclear beats, Though an alternate beat detection method may be added. any song that has clear beats should work well, but in a song with more instruments the beat detection system may get confused
 
 Looping is currently disabled because of a bug when importing the .robobeat file with already defined start and end times, but you can still test out the looping system on the Track page, it will just not be exported.
 
