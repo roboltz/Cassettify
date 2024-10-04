@@ -31,6 +31,9 @@ If you have a song selected, set a title and author (or selected the extracted t
 After you import the robobeat file, you can play it like any other cassette!
 ![ROBOBEAT 03_10_2024 23_33_43](https://github.com/user-attachments/assets/bed4ca83-4159-4a6b-9044-412b2b4907d4)
 
+## Known Issues
+* File names that contain special characters, for example text in another language, will not be able to be imported properly. Same goes for the metadata. Until a patch is released, if your filename has special characters, simply rename it. If your metadata has special characters, use an online metadata remover.
+
 ## Planned Additions
 
 * Constant BPM mode. (for better support for most newer digital music)
