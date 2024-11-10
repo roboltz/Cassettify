@@ -10,7 +10,7 @@ the .flac file type is also supported while it is not in the game, as the app wi
 automatic beat detection, which uses part of the [Essentia](https://essentia.upf.edu) audio library to find the positions of beats in a song. This is superior to the base game's beat detection, and on certain songs with clear beats, can be even better than cassettes made by people.
 The beat detection is great at finding the beats to old songs with inconsistent BPM, but can sometimes get confused, and often thinks that the offbeat of the song is the main beat. If this happens you can select all beats in ROBOBEAT's cassette editor with Ctrl+A, and then adjust the timings to the main beat. An extra alternate beat detection method may be added to counteract this as well.
 
-Looping is currently disabled because of a bug when importing the .robobeat file with already defined start and end times, but you can still test out the looping system on the Track page, it will just not be exported.
+Looping is currently disabled because of a bug when importing the .robobeat file with already defined start and end times, but you can still test out the looping system on the Track page, it will just not be exported. It has already been fixed and will be added in the next update.
 
 ## Screenshots
 Config:
@@ -38,5 +38,5 @@ After you import the robobeat file, you can play it like any other cassette!
 
 * Constant BPM mode. (for better support for most newer digital music)
 * RGBA selector for custom cassette color.
-* Fixing and reimplementing looping. (maybe, but I'm doubtful I could get it working)
-No plans on Linux support, unless ROBOBEAT adds Linux support.
+* Fixing and reimplementing looping. (done, will be added in next update)
+* Visual Beat editor (similar to the base game's, but with some extra features like beat snapping)
