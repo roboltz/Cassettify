@@ -49,8 +49,28 @@ After you import the robobeat file, you can play it like any other cassette!
 * Fixing and reimplementing looping. (done, will be added in next update)
 * Visual Beat editor (similar to the base game's, but with some extra features like beat snapping)
 
-## Build Instructions
+## Build Instructions (WIP, will work soon)
 1. Download source code, either manually or with this git command:
-```git
+```console
 git clone https://github.com/roboltz/Cassettify.git
+```
+2. Open your command prompt if you haven't already and change your directory into the downloaded folder. If you installed the source code manually you will need to unzip it first.
+
+3. download the latest version of (Python 3.12)[https://www.python.org/downloads] and run this command to create an enviornment in the folder to store the libraries:
+```console
+py -3.12 -m venv .venv
+```
+4. Activate the created enviornment:
+```console
+.venv\Scripts\activate
+```
+You should now see (.venv) to the far right of the console prefixing the path.
+
+5. Make sure pip is updated:
+```console
+py -m pip install --upgrade pip
+```
+6. Install all required libraries from the requirements.txt file:
+```console
+py -m pip install -r requirements.txt
 ```
