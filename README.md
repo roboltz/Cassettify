@@ -51,6 +51,6 @@ After you import the robobeat file, you can play it like any other cassette!
 
 ## Build Instructions
 1. Download source code, either manually or with this git command:
-```console
+```git
 git clone https://github.com/roboltz/Cassettify.git
 ```
