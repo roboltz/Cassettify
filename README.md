@@ -48,3 +48,6 @@ After you import the robobeat file, you can play it like any other cassette!
 * RGBA selector for custom cassette color.
 * Fixing and reimplementing looping. (done, will be added in next update)
 * Visual Beat editor (similar to the base game's, but with some extra features like beat snapping)
+
+## Build Instructions
+1. Download source code, either manually or with this git command: `git clone https://github.com/roboltz/Cassettify.git`
