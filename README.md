@@ -56,7 +56,7 @@ git clone https://github.com/roboltz/Cassettify.git
 ```
 2. Open your command prompt if you haven't already and change your directory into the downloaded folder. If you installed the source code manually you will need to unzip it first.
 
-3. download the latest version of (Python 3.12)[https://www.python.org/downloads] and run this command to create an enviornment in the folder to store the libraries:
+3. download the latest version of [Python 3.12](https://www.python.org/downloads) and run this command to create an enviornment in the folder to store the libraries:
 ```console
 py -3.12 -m venv .venv
 ```
