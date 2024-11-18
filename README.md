@@ -12,6 +12,12 @@ The beat detection is great at finding the beats to old songs with inconsistent 
 
 Looping is currently disabled because of a bug when importing the .robobeat file with already defined start and end times, but you can still test out the looping system on the Track page, it will just not be exported. It has already been fixed and will be added in the next update.
 
+Credits:
+Font: [Pixelated by Greenma20](http://fontstruct.com/fontstructions/show/426637)
+Beat detector: [Essentia Beat Tracker](https://essentia.upf.edu), go to Download > Precompiled extractor binaries > Current builds > essentia-extractors-v2.1_beta5-356-g673b6a14-win-i686 > essentia_streaming_rhythmextractor_multifeature.exe
+Other audio related tasks: [ffmpeg](https://ffmpeg.org), go to Download > Get packages & executable files > Windows > Windows builds from gyan.dev > ffmpeg-git-essentials.7z
+
+
 ## Screenshots
 Config:
 ![Cassettify 03_10_2024 22_48_26](https://github.com/user-attachments/assets/0cf7a9b4-856c-4525-abb3-2d08d28acad1)
