@@ -7,10 +7,14 @@ import pygame
 import json
 import random, string
 
+# Initializes pygame which handles music playback
 pygame.init()
 
+# Setting UI Theme
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("theme/cassettify_theme.json")
+
+# Deleting old files from previous runs of the app
 if os.path.exists("ffmpeg\\image_output\\cover.jpg"):
     os.remove("ffmpeg\\image_output\\cover.jpg")
 if os.path.exists("beat_finder\\output\\beat.txt"):
@@ -18,20 +22,31 @@ if os.path.exists("beat_finder\\output\\beat.txt"):
 if os.path.exists("ffmpeg\\flac_convert_output\\output.wav"):
     os.remove("ffmpeg\\flac_convert_output\\output.wav")
 for temp_file in os.listdir("temp"):
-    os.remove("temp\\" + temp_file)
+    if temp_file != ".gitignore":
+        os.remove("temp\\" + temp_file)
+for audio_file in os.listdir("audio"):
+    if audio_file != ".gitignore":
+        os.remove("audio\\" + audio_file)
 
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+        
+        # Handles window size, title, and icon
         self.geometry("1000x600")
         self.title("Cassettify")
         self.after(201, lambda :self.iconbitmap("images/icon.ico"))
+        
+        # Loading custom font
         customtkinter.FontManager.load_font("font/pixelated/pixelated.ttf")
         self.text_font = customtkinter.CTkFont("Pixelated Regular", 20)
-        # self.text_font = customtkinter.CTkFont("Bahnschrift", 16)
-        self.resizable = False
+
+        # runs sidebar() method for options on the left side of the screen
         self.sidebar()
+
+        # Defining variables
         self.current_page = None
+        self.selected_music_file = None
         self.current_music_file = None
         self.song_duration = "0.00"
         self.song_author = ""
@@ -63,8 +78,8 @@ class App(customtkinter.CTk):
         self.default_cover = False
         self.full_cassette_cover = None
 
-        self.loop_start = 0
-        self.loop_end = 0
+        self.loop_start = None
+        self.loop_end = None
         self.num_beats = 0
         self.beatList=[]
 
@@ -78,19 +93,23 @@ class App(customtkinter.CTk):
         self.loop_end_entry = None
 
 
+    # Creates an interactable sidebar on the left side of the screen
+    # which allows you to travel between different screens
     def sidebar(self):
+        # Frame
         sidebar_frame = customtkinter.CTkFrame(self, corner_radius=0, width=150, height=5000)
         sidebar_frame.place(x=0, y=0)
 
+        # Icon and title
         icon_image = Image.open("images\\icon.png")
         icon_image = icon_image.convert("P", palette=Image.ADAPTIVE, colors=10, dither=Image.FLOYDSTEINBERG)
         sidebar_icon = customtkinter.CTkImage(light_image=icon_image, dark_image=icon_image, size=(100, 100))
         sidebar_icon_label = customtkinter.CTkLabel(sidebar_frame, width=75, height=75, image=sidebar_icon, text="")
         sidebar_icon_label.place(x=25, y=25)
-
         title_label = customtkinter.CTkLabel(sidebar_frame, width=149.5, text="CASSETTIFY", font=self.text_font)
         title_label.place(x=0, y=10)
 
+        # Buttons for changing screen
         config = customtkinter.CTkButton(sidebar_frame, width=149.5, height=30, text="Config", border_width=0, corner_radius=0, font=self.text_font, command=self.config_page)
         config.place(x=0, y=115)
         visuals = customtkinter.CTkButton(sidebar_frame, width=149.5, height=30, text="Visuals", border_width=0, corner_radius=0, font=self.text_font, command=self.visual_page)
@@ -101,9 +120,13 @@ class App(customtkinter.CTk):
         export.place(x=0, y=205)
         
 
+    # Page which lets you import your song and change various info
+    # about the cassette such as title and author
     def config_page(self):
+        # Reset page area
         config_frame = self.start_new_page()
 
+        # Title and author entry
         self.song_name_entry = customtkinter.CTkEntry(config_frame, font=self.text_font)
         self.song_name_entry.place(x=45, y=50)
 
@@ -116,20 +139,25 @@ class App(customtkinter.CTk):
         song_author = customtkinter.CTkLabel(config_frame, text="Author", font=self.text_font)
         song_author.place(x=50, y=100)
 
+        # Button to select music file
         config_track = customtkinter.CTkButton(config_frame, width=100, height=30, text="Select Music File", border_width=0, corner_radius=5, font=self.text_font, command=self.select_music_file)
-        config_track.place(x=45, y=195)
+        config_track.place(x=45, y=245)
         
+        # Text showing selected file
         self.config_track_filename = customtkinter.CTkLabel(config_frame, text="No File Selected", font=self.text_font)
-        self.config_track_filename.place(x=50, y=230)
+        self.config_track_filename.place(x=50, y=280)
 
+        # Checkbox for using title and author from metadata in cassette
         self.extracted_title_author_checkbox = customtkinter.CTkCheckBox(config_frame, text="Use Extracted Title & Author", font=self.text_font, border_width=1, corner_radius=0, state="disabled", command=self.on_extracted_data_checkbox_pressed)
-        self.extracted_title_author_checkbox.place(x=50, y = 290)
+        self.extracted_title_author_checkbox.place(x=50, y = 340)
         
+        # Checkbox to preview selected song
         self.config_preview_song_checkbox = customtkinter.CTkCheckBox(config_frame, text="Preview Song", font=self.text_font, border_width=1, corner_radius=0, command=self.preview_song, state="disabled")
-        self.config_preview_song_checkbox.place(x=50, y = 350)
+        self.config_preview_song_checkbox.place(x=50, y = 400)
 
-        if self.current_music_file:
-            self.config_track_filename.configure(text=os.path.basename(self.current_music_file))
+        # Handles returning screen to previous state after the user clicks off the screen and then returns
+        if self.selected_music_file:
+            self.config_track_filename.configure(text=os.path.basename(self.selected_music_file))
             self.config_preview_song_checkbox.configure(state="normal")
             if self.extracted_song_title:
                 self.extracted_song_title_label = customtkinter.CTkLabel(self.current_page, text=self.extracted_song_title, font=self.text_font)
@@ -165,35 +193,64 @@ class App(customtkinter.CTk):
                 self.song_author_entry.configure(state="disable")
             
 
+    # Handles the user selecting a music file, and runs when the user clicks the config_track
+    # button under the config_page() function
     def select_music_file(self):
-        self.current_music_file = customtkinter.filedialog.askopenfilename(filetypes=[("Music Files", "*.mp3 *.ogg *.wav *.flac")], initialdir = os.path.join(os.path.expanduser("~"), "Downloads"))
+        # Opens files select screen, returns as a full file path
+        self.selected_music_file = customtkinter.filedialog.askopenfilename(filetypes=[("Music Files", "*.mp3 *.ogg *.wav *.flac")], initialdir = os.path.join(os.path.expanduser("~"), "Downloads"))
+        
+        # Creates a variable for the new file path of the selected song
+        # and changes based on the audio type (ex: audio/song.mp3, audio/song.ogg)
+        self.current_music_file = "audio\\song" + os.path.splitext(self.selected_music_file)[1]
+        # Removes the previous music file in the future position if it exists
+        if os.path.exists(self.current_music_file):
+            os.remove(self.current_music_file)
+        # Copies the file to the new destination and renames it
+        # This fixes a bug which is caused by the essentia beat tracker
+        # not being able to read files with unicode characters in their name
+        shutil.copy(self.selected_music_file, self.current_music_file)
+
+        # Continues only if the user selected a file
         if self.current_music_file:
+            # Allows user to select checkboxes
             self.song_name_entry.configure(state="normal")
             self.song_author_entry.configure(state="normal")
             self.extracted_title_author_checkbox.deselect()
             self.config_preview_song_checkbox.configure(state="normal")
+            # Toggles checkbox to run the preview_song() function and stop the currently playing song
+            # Deselect does not run the checkbox's command
             if self.config_preview_song_checkbox.get() == 1:
                 self.config_preview_song_checkbox.toggle()
-            self.config_track_filename.configure(text=os.path.basename(self.current_music_file))
+            
+            # Gets the file name of the song file from the file path and sets that to the config page text
+            self.config_track_filename.configure(text=os.path.basename(self.selected_music_file))
+
+            # Removes old metadata song cover if it exists
             if os.path.exists("ffmpeg\\image_output\\cover.jpg") and self.current_music_file:
                 os.remove("ffmpeg\\image_output\\cover.jpg")
+            # Attempts to extract song cover, title, and artist from metadata and extracts song duration
             self.run_command("ffmpeg\\ffmpeg.exe -i \"" + self.current_music_file + "\" -an -c:v copy ffmpeg\\image_output\\cover.jpg")
             self.song_duration = self.run_command("ffmpeg\\ffprobe.exe -i \"" + self.current_music_file + "\" -show_entries format=duration -v quiet -of csv=\"p=0\"")
             self.extracted_song_title = self.run_command("ffmpeg\\ffprobe.exe -v error -show_entries format_tags=title -of default=nw=1:nk=1 \"" + self.current_music_file + "\"")
             self.extracted_song_author = self.run_command("ffmpeg\\ffprobe.exe -v error -show_entries format_tags=artist -of default=nw=1:nk=1 \"" + self.current_music_file + "\"")
+
             self.loop_end = self.song_duration
 
+            # Lets the user press the use extracted title and author button
+            # only if both title and author were successfully extracted from the metadata
             if self.extracted_song_author and self.extracted_song_title:
                 self.extracted_title_author_checkbox.configure(state="normal")
             else: 
                 self.extracted_title_author_checkbox.configure(state="disabled")
 
+            # Show text showing that no author or title was found in the metadata
             if not self.extracted_song_author:
                 self.extracted_song_author = "No Author Found"
             
             if not self.extracted_song_title:
                 self.extracted_song_title = "No Title Found"
 
+            # Show found metadata on config screen
             if self.extracted_song_title_label:
                 self.extracted_song_title_label.destroy()
             self.extracted_song_title_label = customtkinter.CTkLabel(self.current_page, text=self.extracted_song_title, font=self.text_font)
@@ -222,26 +279,60 @@ class App(customtkinter.CTk):
             self.config_cover_image_label = customtkinter.CTkLabel(self.current_page, width=150, height=150, image=cover_image, text=cover_text, font=self.text_font)
             self.config_cover_image_label.place(x=350, y=85)
 
+            # Reset variables
             self.beatList = []
-
             self.loop_start = 0
             self.loop_end = self.song_duration
+            self.full_cassette_cover = None
 
+    # Use extracted metadata as the main song title and author
+    # if the checkbox is checked
+    def on_extracted_data_checkbox_pressed(self):
+        if self.extracted_title_author_checkbox.get() == 1:
+            self.song_title = self.extracted_song_title
+            self.song_author = self.extracted_song_author
+            self.song_name_entry.configure(state="disabled")
+            self.song_author_entry.configure(state="disabled")
+            self.using_extracted_data = True
+        else:
+            self.song_title = self.song_name_entry.get()
+            self.song_author = self.song_author_entry.get()
+            self.song_name_entry.configure(state="normal")
+            self.song_author_entry.configure(state="normal")
+            self.using_extracted_data = False
+
+    # Preview the selected song if the preview song checkbox is checked
+    def preview_song(self):
+        if self.config_preview_song_checkbox.get() == 1:
+            if self.current_music_file:
+                mixer.music.load(self.current_music_file)
+                mixer.music.play()
+        else:
+            if mixer.music.get_busy():
+                mixer.music.stop()
+
+
+    # Page that lets you set a custom cassette cover
     def visual_page(self):
+        # Reset page area
         visual_frame = self.start_new_page()
 
+        # Buttons for selecting a cassette cover manually or from the metadata
         image_path_button = customtkinter.CTkButton(visual_frame, width=100, height=30, text="Select Image File", border_width=0, corner_radius=5, font=self.text_font, command=self.select_cover_file)
         image_path_button.place(x=45, y=20)
         
         image_data_button = customtkinter.CTkButton(visual_frame, width=100, height=30, text="Use Album Cover", border_width=0, corner_radius=5, font=self.text_font, state="disabled", command=self.select_album_cover)
         image_data_button.place(x=45, y=60)
+        # Only allow the user to use the album cover button if the metadata contained a music file
         if os.path.exists("ffmpeg\\image_output\\cover.jpg"):
             image_data_button.configure(state="normal")
 
+        # Image of the cassette with cover preview
         cassette_cover_overlay_img = customtkinter.CTkImage(dark_image=self.cassette_cover_overlay, light_image=self.cassette_cover_overlay, size=self.cassette_cover_overlay.size)
         self.cassette_img_label = customtkinter.CTkLabel(visual_frame, width=self.cassette_cover_overlay.width/2, height=self.cassette_cover_overlay.height/2, image=cassette_cover_overlay_img, text="")
         self.cassette_img_label.place(x=350, y=25)
 
+        # Entries for the position of the custom image
         self.cassette_img_x_entry = customtkinter.CTkEntry(visual_frame, font=self.text_font, width=130, state="disabled")
         self.cassette_img_x_entry.place(x=350, y=250)
         self.cassette_img_y_entry = customtkinter.CTkEntry(visual_frame, font=self.text_font, width=130, state="disabled")
@@ -252,47 +343,66 @@ class App(customtkinter.CTk):
         cassette_y_label = customtkinter.CTkLabel(visual_frame, font=self.text_font, width=130, text="Y")
         cassette_y_label.place(x=500, y=220)
 
+
+        # Button to move custom image based on the entries' values
         self.move_cassette_button = customtkinter.CTkButton(visual_frame, width=280, height=30, text="Move", border_width=0, corner_radius=5, font=self.text_font, state="disabled", command=self.move_button_pressed)
         self.move_cassette_button.place(x=350, y=290)
 
+        # Checkbox to use the default cassette cover, ignoring other changes within the visual menu
         self.use_default_checkbox = customtkinter.CTkCheckBox(visual_frame, text="Use Default Cover", font=self.text_font, border_width=1, corner_radius=0, command=self.use_default)
         self.use_default_checkbox.place(x=50, y=100)
 
-        cassette_y_label = customtkinter.CTkLabel(visual_frame, font=self.text_font, width=130, text="Use an image with a 1:1 aspect ratio.")
-        cassette_y_label.place(x=345, y=350)
+        # Text to notify the user that it recommends they use an image with a 1:1 aspect ratio
+        cassette_image_notif = customtkinter.CTkLabel(visual_frame, font=self.text_font, width=130, text="Use an image with a 1:1 aspect ratio.")
+        cassette_image_notif.place(x=345, y=350)
 
+        # Handles returning screen to previous state after the user clicks off the screen and then returns
         if self.full_cassette_cover:
             self.custom_cassette_cover()
         if self.default_cover:
             self.use_default_checkbox.select()
 
+    # Handles changing if the user wants to use a default cassette cover
     def use_default(self):
         if self.use_default_checkbox.get() == 1:
             self.default_cover = True
         else:
             self.default_cover = False
 
+    # Handles the user selecting a file for the custom cassette cover
     def select_cover_file(self):
         self.current_cover = customtkinter.filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg")], initialdir = os.path.join(os.path.expanduser("~"), "Downloads"))
         if self.current_cover:
             self.custom_cassette_cover()
 
+    # Handles the user selecting the song metadata for the custom cassette cover
     def select_album_cover(self):
         self.current_cover = "ffmpeg\\image_output\\cover.jpg"
         self.custom_cassette_cover()
 
+    # Handles positioning the custom image within the small custom cassette template
+    # and converting it over to a full sized one
     def custom_cassette_cover(self):
+        # Allows the user to move the image within the cassette
         self.cassette_img_x_entry.configure(state="normal")
         self.cassette_img_y_entry.configure(state="normal")
         self.move_cassette_button.configure(state="normal")
+       
+        # Creating temporary image objects and converting and resizing them.
         temp_base = Image.new("RGB", self.cassette_cover_overlay.size, (255, 255, 255))
         temp_img = Image.open(self.current_cover).convert("RGBA").resize((280, 280))
+        
+        # Pasting the custom image under the cassette overlay
         temp_base.paste(temp_img, (self.cover_pos_x, self.cover_pos_y), temp_img)
         temp_base.paste(self.cassette_cover_overlay, (0, 0), self.cassette_cover_overlay)
+
+        # Displays custom cassette cover preview
         cassette_img = customtkinter.CTkImage(dark_image=temp_base, light_image=temp_base, size=self.cassette_cover_overlay.size)
         self.cassette_img_label.destroy()
         self.cassette_img_label = customtkinter.CTkLabel(self.current_page, width=self.cassette_cover_overlay.width/2, height=self.cassette_cover_overlay.height/2, image=cassette_img, text="")
         self.cassette_img_label.place(x=350, y=25)
+
+        # Converting the custom cassette cover preview to a full size one
         full_cassette_overlay = Image.open("images\\CustomCassetteTemplate.png")
         full_temp_base = Image.new("RGB", full_cassette_overlay.size, (255, 255, 255))
         left = -self.cover_pos_x 
@@ -310,32 +420,34 @@ class App(customtkinter.CTk):
         full_temp_base.paste(temp_img, full_cassette_pos2, temp_img)
         full_temp_base.paste(full_cassette_overlay, (0, 0), full_cassette_overlay)
         self.full_cassette_cover = full_temp_base.copy()
-        
+    
+    # Moves the position of the custom image within the cassette overlay
     def move_button_pressed(self):
         if self.cassette_img_x_entry.get() != "":
             self.cover_pos_x = int(self.cassette_img_x_entry.get())
         if self.cassette_img_y_entry.get() != "":
             self.cover_pos_y = int(self.cassette_img_y_entry.get())
         self.custom_cassette_cover()
-
-    def default_checkbox_pressed(self):
-        if self.use_default_checkbox.get() == 1:
-            self.default_cover = True
-        else:
-            self.default_cover = False
-
+    
+    # Page that handles a song's beats and looping
     def track_page(self):
+        # Reset page area
         track_frame = self.start_new_page()
+
+        # Button to Find a song's beats, only avaliable to press 
+        # when the user has selected a song in the config page
         self.find_beat_button = customtkinter.CTkButton(track_frame, width=100, height=30, text="Find Beats", border_width=0, corner_radius=5, font=self.text_font, state="disabled", command=self.find_beats)
         self.find_beat_button.place(x=45, y=20)
         if self.current_music_file:
             self.find_beat_button.configure(state="normal")
         
+        # Label that tells the user the number of beats it has found if it has found any yet
         self.find_beat_label = customtkinter.CTkLabel(track_frame, width=100, height=30, text="Beats Not Found", font=self.text_font)
         self.find_beat_label.place(x=50, y=50)
 
-        looping_label = customtkinter.CTkLabel(track_frame, width=100, height=30, text="Looping (Under Construction, Does Nothing to Final Cassette)", font=self.text_font)
-        looping_label.place(x=200, y=20)
+        # Looping section for setting starting and stopping points for the cassette
+        looping_label = customtkinter.CTkLabel(track_frame, width=100, height=30, text="Looping", font=self.text_font)
+        looping_label.place(x=405, y=20)
 
         loop_start_label = customtkinter.CTkLabel(track_frame, width=100, height=30, text="Start Beat #", font=self.text_font)
         loop_start_label.place(x=325, y=50)
@@ -355,17 +467,19 @@ class App(customtkinter.CTk):
         self.preview_loop_button = customtkinter.CTkButton(track_frame, width=100, height=30, text="Preview Loop", font=self.text_font, border_width=0, corner_radius=5, state="disabled", command=self.preview_loop)
         self.preview_loop_button.place(x=390, y=200)
 
+        # Handles returning screen to previous state after the user clicks off the screen and then returns
         if self.beatList:
             self.find_beat_label.configure(text="Found  " + str(len(self.beatList)) + "  Beats")
             self.apply_loop_button.configure(state="normal")
             self.loop_end_entry.configure(state="normal")
             self.loop_start_entry.configure(state="normal")
-            self.preview_loop_button.configure(state="normal")
+            if self.loop_start != 0 and self.loop_end != self.song_duration:
+                self.preview_loop_button.configure(state="normal")
             self.loop_start_entry.insert("end", self.entered_start_loop)
             self.loop_end_entry.insert("end", self.entered_end_loop )
             self.beat_list_textbox = customtkinter.CTkTextbox(self.current_page, activate_scrollbars=False, font=self.text_font)
             for i in range(self.num_beats):
-                self.viewable_beats += str(i+1) + "                  " + self.beatList[i] + "\n"
+                self.viewable_beats += str(i+1) + "                  " + str(self.beatList[i]) + "\n"
             self.beat_list_textbox.insert('end', self.viewable_beats)
             self.beat_list_textbox.configure(state="disable")
             self.beat_list_textbox.place(x=45, y=100)
@@ -377,7 +491,10 @@ class App(customtkinter.CTk):
 
 
     def find_beats(self):
+        # Runs the Essentia beat tracker with the current song to automatically find all of the beat positions in the song
         self.run_command('beat_finder\\essentia_streaming_beattracker_multifeature_mirex2013.exe "' + self.current_music_file + '" beat_finder\\output\\beat.txt')
+        
+        # Formats the data from the beat tracker to be able to use as a list of integers
         with open("beat_finder\\output\\beat.txt", "r") as beats:
             self.beatList = beats.readlines()
         new_beats = ""
@@ -390,10 +507,17 @@ class App(customtkinter.CTk):
                 new_beats += self.beatList[i].rstrip()
         with open("beat_finder\\output\\beat.txt", "w") as beats:
             beats.write(new_beats)
+        
+        # Show the number of beats found on the beat label
         self.find_beat_label.configure(text="Found  " + str(len(self.beatList)) + "  Beats")
+
+        # Enable looping after finding beats
         self.apply_loop_button.configure(state="normal")
         self.loop_end_entry.configure(state="normal")
         self.loop_start_entry.configure(state="normal")
+
+        # Creates a scrollable area showing all beats and 
+        # their positions in time in the song to assist looping
         if self.beat_list_textbox and self.beat_list_scrollbar:
             self.beat_list_textbox.destroy()
             self.beat_list_scrollbar.destroy()
@@ -410,6 +534,8 @@ class App(customtkinter.CTk):
         self.beat_list_textbox.configure(yscrollcommand=self.beat_list_scrollbar.set)
 
 
+    # Handles applying a loop and cases where the set
+    # time for the loop is outside of the possible range
     def apply_loop(self):
         try:
             self.loop_start = float(self.beatList[int(self.loop_start_entry.get())-1])
@@ -417,65 +543,90 @@ class App(customtkinter.CTk):
             if self.loop_start < self.loop_end and self.loop_end <= float(self.song_duration):
                 self.preview_loop_button.configure(state="normal")
             else:
-                self.loop_start = 0
-                self.loop_end = self.song_duration
+                self.loop_start = None
+                self.loop_end = None
                 self.preview_loop_button.configure(state="disabled")
         except:
-            self.loop_start = 0
-            self.loop_end = self.song_duration
+            self.loop_start = None
+            self.loop_end = None
             self.preview_loop_button.configure(state="disabled")
     
+    # Plays the end and a little of the start of the set loop of the song
     def preview_loop(self):
         if self.current_music_file and not mixer.music.get_busy():
                 mixer.music.load(self.current_music_file)
                 mixer.music.play(start=self.loop_end-2)
                 self.after(2000, self.new_loop)
 
+    # stops and restarts the loop to prevent the 
+    # music from overlapping when clicked multiple times in quick sucession
     def new_loop(self):
         mixer.music.stop()
         mixer.music.play(start=self.loop_start)
-        self.after(2000, self.end_loop)
+        self.after(2000, mixer.music.stop()) 
 
-    def end_loop(self):
-        mixer.music.stop()
-
+    # Page for exporting the cassette as a .robobeat file
     def export_page(self):
+        # Reset page area
         export_frame = self.start_new_page()
+        
+        # Handles which title and author to use 
+        # if the checkbox for using metadata is checked or not
         if self.extracted_title_author_checkbox:
             if self.extracted_title_author_checkbox.get() == 0:
                 self.song_title = self.entered_song_title
-            
             if self.extracted_title_author_checkbox.get() == 0:
                 self.song_author = self.entered_song_author
 
+        # Button to export, only avaliable to press if all needed conditions are met
         export_button = customtkinter.CTkButton(export_frame, width=100, height=30, text="Export .robobeat", border_width=0, corner_radius=5, font=self.text_font, command=self.export_robobeat_file, state="disabled")
         export_button.place(x=300, y=200)
         if self.current_music_file and self.song_duration and self.song_author and self.song_title and (self.full_cassette_cover or self.default_cover) and self.beatList:
             export_button.configure(state="normal")
 
+    # Handles combining all nessesary data into a .robobeat file
     def export_robobeat_file(self):
+        # Asks user for destination of file
         exported_filename = customtkinter.filedialog.asksaveasfilename(filetypes=[("ROBOBEAT File", "*.robobeat")], initialdir = os.path.join(os.path.expanduser("~"), "Downloads"))
         exported_filename = os.path.splitext(exported_filename)[0] + ".robobeat"
-        print(exported_filename)
+
+        # Runs the following only if the user has selected a destination
         if exported_filename:
+            # Converts .flac music files into .wav as robobeat does not support .flac
             if self.current_music_file.endswith(".flac"):
                 self.run_command("ffmpeg\\ffmpeg.exe -i \"" + self.current_music_file + "\" ffmpeg\\flac_convert_output\\output.wav")
                 self.current_music_file = "ffmpeg\\flac_convert_output\\output.wav"
+
+            # Generates a random internal name for the cassette, 
+            # similar to robobeat's internal naming system
             letters = string.ascii_lowercase
             internal_name = "cassettify_"
             for i in range(30):
                 internal_name += random.choice(letters)
+
+            # Creates a new name for the music file based on the internal name
+            # and adds the music file's extension to it, then copies the song into
+            # a temporary folder with that name
             original_soundfilename = os.path.basename(self.current_music_file)
             soundfilename_extension = "." + original_soundfilename.split(".")[-1]
             exported_soundfilename = internal_name + "_audio" + soundfilename_extension
             shutil.copyfile(self.current_music_file, "temp\\" + exported_soundfilename)
 
+            # decides on the config file the .robobeat file will use depending on if
+            # the user is using a custom cassette cover or not
             if self.default_cover:
                 config_file_loc = "config_template\\cassetteConfigP2.json"
             else:
                 config_file_loc = "config_template\\cassetteConfigP2CustomVisuals.json"
+                # if the user is using a custom cover, copy that into the temp file
+                # with the internal name
                 self.full_cassette_cover.save("temp\\" + internal_name + ".png")
+            
+            # location for extra data of the config file that is added on before
+            # copying the config file to the temp folder
             config_metadata_loc = "config_template\\cassetteConfigP1.json"
+            
+            # Loads and changes the data in the config file based on the user's inputs
             with open(config_file_loc, "r") as j:
                 loaded_config = json.load(j)
             loaded_config["InternalName"] = internal_name
@@ -485,22 +636,35 @@ class App(customtkinter.CTk):
             loaded_config["File"]["Info"]["LengthOfClip"] = float(self.song_duration)
             loaded_config["File"]["Info"]["PublicName"] = self.song_title
             loaded_config["File"]["Info"]["ArtistName"] = self.song_author
-            loaded_config["File"]["Beat"]["StartTime"] = 0.0 # float(self.loop_start)
-            loaded_config["File"]["Beat"]["EndTime"] = float(self.song_duration) # float(self.loop_end)
-            loaded_config["File"]["Beat"]["NumberOfBeats"] = self.num_beats
+            if not self.loop_start:
+                self.loop_start = 0
+            if not self.loop_end:
+                self.loop_end = self.song_duration
+            loaded_config["File"]["Beat"]["StartTime"] = float(self.loop_start)
+            loaded_config["File"]["Beat"]["EndTime"] = float(self.loop_end)
+            # Handles the looping process and deleting beats outside of the loop
             float_beat_list = self.beatList
-            for i in range(len(float_beat_list)):
-                try:
+            if not self.loop_start == 0.0 and not self.loop_end == float(self.song_duration):
+                start_pos = 0
+                end_pos = 0
+                rounded_float_beat_list = []
+                for i in range(len(float_beat_list)):
                     float_beat_list[i] = float(float_beat_list[i].rstrip())
-                except:
-                    pass
-            """try:
-                float_beat_list.remove(float(self.loop_start))
-            except:
-                pass"""
+                    rounded_float_beat_list.append(round(float_beat_list[i], 2))
+                float_beat_list = float_beat_list[rounded_float_beat_list.index(round(loaded_config["File"]["Beat"]["StartTime"], 2)) + 1:rounded_float_beat_list.index(round(loaded_config["File"]["Beat"]["EndTime"], 2)) + 1]
+                # Adds to the end time by a small amount to prevent the last beat from being behind the loop end point
+                loaded_config["File"]["Beat"]["EndTime"] += 0.001
+                self.num_beats = len(float_beat_list)
+            else:
+                for i in range(len(float_beat_list)):
+                    float_beat_list[i] = float(float_beat_list[i].rstrip())   
+            loaded_config["File"]["Beat"]["NumberOfBeats"] = self.num_beats
             loaded_config["File"]["Beat"]["Beats"] = float_beat_list
             if not self.default_cover:
                 loaded_config["File"]["Visuals"]["CassetteTextureInternalName"] = internal_name + ".png"
+            # Copies the two parts of the config together, 
+            # the main config and extra data and makes the
+            # .cassette file containing data about the cassette
             config_str_part = json.dumps(loaded_config, indent=4)
             with open(config_metadata_loc, "r") as j:
                 full_config = j.read() + config_str_part
@@ -509,30 +673,33 @@ class App(customtkinter.CTk):
             with open(final_config_path, "a") as j:
                 j.write(full_config)
             
+            # Converts the config file to use Unix 
+            # line endings, the same as robobeat does
             WINDOWS_LINE_ENDING = b'\r\n'
             UNIX_LINE_ENDING = b'\n'
-
             with open(final_config_path, 'rb') as open_file:
                 content = open_file.read()
-
             content = content.replace(WINDOWS_LINE_ENDING, UNIX_LINE_ENDING)
-
             with open(final_config_path, 'wb') as open_file:
                 open_file.write(content)
+            
+            # Creates a .zip file and packages all data from the temp folder,
+            # Then renames the .zip folder into a .robobeat folder and finishes
             shutil.make_archive(exported_filename, 'zip', "temp\\")
             os.rename(exported_filename + ".zip", exported_filename)
             for temp_file in os.listdir("temp"):
-                os.remove(os.path.join("temp/" + temp_file))
+                os.remove("temp\\" + temp_file)
             self.finished()
         
-    
+    # Communicates to the user that exporting has finished
     def finished(self):
-        for child in self.winfo_children():
-            child.destroy()
-        finish_label = customtkinter.CTkLabel(self, font=self.text_font, width=130, text="Finished!")
-        finish_label.place(x=430, y=220)
+        """for child in self.winfo_children():
+            child.destroy()"""
+        finish_page = self.start_new_page()
+        finish_label = customtkinter.CTkLabel(finish_page, font=self.text_font, width=130, text="Finished!")
+        finish_label.place(x=300, y=220)
             
-
+    # Returns a new page and removes the old one if any
     def start_new_page(self):
         if self.song_name_entry and self.song_author_entry:
             self.entered_song_title = self.song_name_entry.get()
@@ -549,7 +716,8 @@ class App(customtkinter.CTk):
         new_frame.place(x=150, y=0)
         self.current_page = new_frame
         return new_frame
-
+    
+    # Removes the current page if there is one
     def remove_current_page(self):
         if self.current_page is not None:
             self.current_page.destroy()
@@ -557,41 +725,13 @@ class App(customtkinter.CTk):
         if mixer.music.get_busy():
                 mixer.music.stop()
     
+    # Handles running and returning console commands
     def run_command(self,cmd):
         try:
-            result = subprocess.check_output(cmd, shell=True, universal_newlines=True)
+            result = subprocess.check_output(cmd, shell=True, universal_newlines=True, encoding="utf-8")
             return result.strip()
         except subprocess.CalledProcessError as error:
             return error.output.strip()
-        
-    def on_extracted_data_checkbox_pressed(self):
-        if self.extracted_title_author_checkbox.get() == 1:
-            self.song_title = self.extracted_song_title
-            self.song_author = self.extracted_song_author
-            self.song_name_entry.configure(state="disabled")
-            self.song_author_entry.configure(state="disabled")
-            self.using_extracted_data = True
-        else:
-            self.song_title = self.song_name_entry.get()
-            self.song_author = self.song_author_entry.get()
-            self.song_name_entry.configure(state="normal")
-            self.song_author_entry.configure(state="normal")
-            self.using_extracted_data = False
-
-    def preview_song(self):
-        if self.config_preview_song_checkbox.get() == 1:
-            if self.current_music_file:
-                mixer.music.load(self.current_music_file)
-                mixer.music.play()
-        else:
-            if mixer.music.get_busy():
-                mixer.music.stop()
-
-
-
-
-            
-
 
 new_app = App()
 new_app.mainloop()
