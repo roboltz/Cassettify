@@ -41,6 +41,7 @@ After you import the robobeat file, you can play it like any other cassette!
 
 ## Known Issues
 * App freezes when finding beats. (Not really a bug, but can be confusing for people who think that their app might have crashed.)
+
 Please report any issues you experience to the issues tab, but check to see if the issue you are experiencing hasn't already been discussed.
 
 ## Planned Additions
@@ -50,6 +51,7 @@ Please report any issues you experience to the issues tab, but check to see if t
 
 ## Build Instructions
 These instructions are designed for people contributing to the repository and are testing! For an already compiled version, check under Releases on the right side of the tab.
+
 1. Download source code, either manually or with this git command:
 ```console
 git clone https://github.com/roboltz/Cassettify.git
