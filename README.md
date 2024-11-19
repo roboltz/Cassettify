@@ -15,9 +15,9 @@ Looping is currently disabled because of a bug when importing the .robobeat file
 ## Credits
 Font: [Pixelated by Greenma20](http://fontstruct.com/fontstructions/show/426637)
 
-Beat detector: [Essentia Beat Tracker](https://essentia.upf.edu), go to Download > Precompiled extractor binaries > Current builds > essentia-extractors-v2.1_beta5-356-g673b6a14-win-i686 > essentia_streaming_beattracker_multifeature_mirex2013.exe
+Beat detector: [Essentia Beat Tracker](https://essentia.upf.edu), found at Download > Precompiled extractor binaries > Current builds > essentia-extractors-v2.1_beta5-356-g673b6a14-win-i686 > essentia_streaming_beattracker_multifeature_mirex2013.exe
 
-Other audio related tasks: [ffmpeg](https://ffmpeg.org), go to Download > Get packages & executable files > Windows > Windows builds from gyan.dev > ffmpeg-git-essentials.7z
+Other audio related tasks: [ffmpeg](https://ffmpeg.org), found at Download > Get packages & executable files > Windows > Windows builds from gyan.dev > ffmpeg-git-essentials.7z
 
 
 ## Screenshots
