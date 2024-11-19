@@ -40,16 +40,16 @@ After you import the robobeat file, you can play it like any other cassette!
 ![ROBOBEAT 03_10_2024 23_33_43](https://github.com/user-attachments/assets/bed4ca83-4159-4a6b-9044-412b2b4907d4)
 
 ## Known Issues
-* File names that contain special characters, for example text in another language, will not be able to be imported properly. Same goes for the metadata. Until a patch is released, if your filename has special characters, simply rename it. If your metadata has special characters, use an online metadata remover.
+* App freezes when finding beats. (Not really a bug, but can be confusing for people who think that their app might have crashed.)
+Please report any issues you experience to the issues tab, but check to see if the issue you are experiencing hasn't already been discussed.
 
 ## Planned Additions
-
 * Constant BPM mode. (for better support for most newer digital music)
 * RGBA selector for custom cassette color.
-* Fixing and reimplementing looping. (done, will be added in next update)
 * Visual Beat editor (similar to the base game's, but with some extra features like beat snapping)
 
-## Build Instructions (WIP)
+## Build Instructions
+These instructions are designed for people contributing to the repository and are testing! For an already compiled version, check under Releases on the right side of the tab.
 1. Download source code, either manually or with this git command:
 ```console
 git clone https://github.com/roboltz/Cassettify.git
@@ -74,3 +74,17 @@ py -m pip install --upgrade pip
 ```console
 py -m pip install -r requirements.txt
 ```
+7. You can either:
+Run python through the Run.py file:
+```console
+py Run.py
+```
+Make sure the enviornment is activated before doing this! the enviornment will deactivate every time you close the command prompt.
+
+Or compile the app:
+```console
+py -m nuitka --standalone --enable-plugin=tk-inter --mingw64 --windows-icon-from-ico=images/icon.ico App.py
+```
+If you have not run the Nuitka compiler before, it will take a while.
+After compiling, delete the App.build folder that is created in the source code. There is also a App.dist folder that is created as well. This is what holds the compiled executable, and is named "App.exe".
+The executable should still NOT work properly yet. Copy every other folder from the main source code folder into App.dist EXCEPT .venv, App.py, and requirements.txt. Now you can remove the App.dist folder from the source code and rename it and the executable to whatever you want (as long as the executable keeps the .exe suffix)
