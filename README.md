@@ -17,6 +17,7 @@ Beat detector: [Essentia Beat Tracker](https://essentia.upf.edu), found at Downl
 
 Other audio related tasks: [ffmpeg](https://ffmpeg.org), found at Download > Get packages & executable files > Windows > Windows builds from gyan.dev > ffmpeg-git-essentials.7z
 
+Color Wheel (In Next Update): [CTkColorPicker](https://github.com/Akascape/CTkColorPicker)
 
 ## Screenshots
 Note: Screenshots are from version v0.1.1-alpha, There are some differences in the UI in later versions.
@@ -49,12 +50,13 @@ Please report any issues you experience to the issues tab, but check to see if t
 
 ## Planned Additions
 * Constant BPM mode. (for better support for most newer digital music)
+* BPM Range for the automatic beat finder (set the range you want the bpm to be set to for higher or lower bpm limits)
 * Button in track menu to listen to the song with beat ticks
-* RGB selector for custom cassette color.
+* RGB selector for custom cassette color. (Next Update)
 * Visual Beat editor (similar to the base game's, but with some extra features like beat snapping, this will take a while and wont be added until much later)
 
 ## Build Instructions
-These instructions are designed for people contributing to the repository and are testing! For an already compiled version, check under Releases on the right side of the tab.
+These instructions are designed for people contributing to the repository and are testing, or if I update the app and forget to make a precompiled release for it. For an already compiled version, check under Releases on the right side of the tab.
 
 1. Download source code, either manually or with this git command:
 ```console
