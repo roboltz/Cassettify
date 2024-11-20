@@ -39,13 +39,17 @@ After you import the robobeat file, you can play it like any other cassette!
 
 ## Known Issues
 * App freezes when finding beats. (Not really a bug, but can be confusing for people who think that their app might have crashed.)
+* Loop preview button doesn't actually preview the loop. (oopsies!)
+* Trying to export the same song twice without restarting the app will cause an error.
+* Cancelling selecting an cover image will result in an error when trying to move
 
 Please report any issues you experience to the issues tab, but check to see if the issue you are experiencing hasn't already been discussed.
 
 ## Planned Additions
 * Constant BPM mode. (for better support for most newer digital music)
-* RGBA selector for custom cassette color.
-* Visual Beat editor (similar to the base game's, but with some extra features like beat snapping)
+* Button in track menu to listen to the song with beat ticks
+* RGB selector for custom cassette color.
+* Visual Beat editor (similar to the base game's, but with some extra features like beat snapping, this will take a while and wont be added until much later)
 
 ## Build Instructions
 These instructions are designed for people contributing to the repository and are testing! For an already compiled version, check under Releases on the right side of the tab.
