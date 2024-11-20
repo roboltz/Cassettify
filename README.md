@@ -19,6 +19,8 @@ Other audio related tasks: [ffmpeg](https://ffmpeg.org), found at Download > Get
 
 
 ## Screenshots
+Note: Screenshots are from version v0.1.1-alpha, There are some differences in the UI in later versions.
+
 Config:
 ![Cassettify 03_10_2024 22_48_26](https://github.com/user-attachments/assets/0cf7a9b4-856c-4525-abb3-2d08d28acad1)
 Image of metadata pulled from one of [Pascal Michael Stiefel's](https://open.spotify.com/artist/3FU61shb6MdX8NLBnBauTI?si=Gke0s4uCSs6xX_mEjH4yIQ) songs from the [A Hat In Time OST](https://store.steampowered.com/app/356831/A_Hat_in_Time__Soundtrack/), Train Rush.
