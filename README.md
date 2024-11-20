@@ -44,7 +44,7 @@ After you import the robobeat file, you can play it like any other cassette!
 * App freezes when finding beats. (Not really a bug, but can be confusing for people who think that their app might have crashed.)
 * Loop preview button doesn't actually preview the loop. (oopsies!)
 * Trying to export the same song twice without restarting the app will cause an error.
-* Cancelling selecting an cover image will result in an error when trying to move
+* Cancelling selecting an cover image will result in an error when trying to move the position of the image.
 
 Please report any issues you experience to the issues tab, but check to see if the issue you are experiencing hasn't already been discussed.
 
