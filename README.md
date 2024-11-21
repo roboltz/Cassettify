@@ -10,17 +10,18 @@ the .flac file type is also supported while it is not in the game, as the app wi
 automatic beat detection, which uses part of the [Essentia](https://essentia.upf.edu) audio library to find the positions of beats in a song. This is superior to the base game's beat detection, and on certain songs with clear beats, can be even better than cassettes made by people.
 The beat detection is great at finding the beats to old songs with inconsistent BPM, but can sometimes get confused, and often thinks that the offbeat of the song is the main beat. If this happens you can select all beats in ROBOBEAT's cassette editor with Ctrl+A, and then adjust the timings to the main beat. An extra alternate beat detection method may be added to counteract this as well.
 
-Looping is currently disabled because of a bug when importing the .robobeat file with already defined start and end times, but you can still test out the looping system on the Track page, it will just not be exported. It has already been fixed and will be added in the next update.
-
 ## Credits
 Font: [Pixelated by Greenma20](http://fontstruct.com/fontstructions/show/426637)
 
-Beat detector: [Essentia Beat Tracker](https://essentia.upf.edu), go to Download > Precompiled extractor binaries > Current builds > essentia-extractors-v2.1_beta5-356-g673b6a14-win-i686 > essentia_streaming_beattracker_multifeature_mirex2013.exe
+Beat detector: [Essentia Beat Tracker](https://essentia.upf.edu), found at Download > Precompiled extractor binaries > Current builds > essentia-extractors-v2.1_beta5-356-g673b6a14-win-i686 > essentia_streaming_beattracker_multifeature_mirex2013.exe
 
-Other audio related tasks: [ffmpeg](https://ffmpeg.org), go to Download > Get packages & executable files > Windows > Windows builds from gyan.dev > ffmpeg-git-essentials.7z
+Other audio related tasks: [ffmpeg](https://ffmpeg.org), found at Download > Get packages & executable files > Windows > Windows builds from gyan.dev > ffmpeg-git-essentials.7z
 
+Color Wheel (In Next Update): [CTkColorPicker](https://github.com/Akascape/CTkColorPicker)
 
 ## Screenshots
+Note: Screenshots are from version v0.1.1-alpha, There are some differences in the UI in later versions.
+
 Config:
 ![Cassettify 03_10_2024 22_48_26](https://github.com/user-attachments/assets/0cf7a9b4-856c-4525-abb3-2d08d28acad1)
 Image of metadata pulled from one of [Pascal Michael Stiefel's](https://open.spotify.com/artist/3FU61shb6MdX8NLBnBauTI?si=Gke0s4uCSs6xX_mEjH4yIQ) songs from the [A Hat In Time OST](https://store.steampowered.com/app/356831/A_Hat_in_Time__Soundtrack/), Train Rush.
@@ -41,15 +42,22 @@ After you import the robobeat file, you can play it like any other cassette!
 
 ## Known Issues
 * App freezes when finding beats. (Not really a bug, but can be confusing for people who think that their app might have crashed.)
+* Loop preview button doesn't actually preview the loop. (oopsies!)
+* Trying to export the same song twice without restarting the app will cause an error.
+* Cancelling selecting an cover image will result in an error when trying to move the position of the image.
+
 Please report any issues you experience to the issues tab, but check to see if the issue you are experiencing hasn't already been discussed.
 
 ## Planned Additions
 * Constant BPM mode. (for better support for most newer digital music)
-* RGBA selector for custom cassette color.
-* Visual Beat editor (similar to the base game's, but with some extra features like beat snapping)
+* BPM Range for the automatic beat finder (set the range you want the bpm to be set to for higher or lower bpm limits)
+* Button in track menu to listen to the song with beat ticks
+* RGB selector for custom cassette color. (Next Update)
+* Visual Beat editor (similar to the base game's, but with some extra features like beat snapping, this will take a while and wont be added until much later)
 
 ## Build Instructions
-These instructions are designed for people contributing to the repository and are testing! For an already compiled version, check under Releases on the right side of the tab.
+These instructions are designed for people contributing to the repository and are testing, or if I update the app and forget to make a precompiled release for it. For an already compiled version, check under Releases on the right side of the tab.
+
 1. Download source code, either manually or with this git command:
 ```console
 git clone https://github.com/roboltz/Cassettify.git
