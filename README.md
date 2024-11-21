@@ -17,7 +17,7 @@ Beat detector: [Essentia Beat Tracker](https://essentia.upf.edu), found at Downl
 
 Other audio related tasks: [ffmpeg](https://ffmpeg.org), found at Download > Get packages & executable files > Windows > Windows builds from gyan.dev > ffmpeg-git-essentials.7z
 
-Color Wheel (In Next Update): [CTkColorPicker](https://github.com/Akascape/CTkColorPicker)
+Color Wheel: [CTkColorPicker](https://github.com/Akascape/CTkColorPicker)
 
 ## Screenshots
 Note: Screenshots are from version v0.1.1-alpha, There are some differences in the UI in later versions.
@@ -42,9 +42,6 @@ After you import the robobeat file, you can play it like any other cassette!
 
 ## Known Issues
 * App freezes when finding beats. (Not really a bug, but can be confusing for people who think that their app might have crashed.)
-* Loop preview button doesn't actually preview the loop. (oopsies!)
-* Trying to export the same song twice without restarting the app will cause an error.
-* Cancelling selecting an cover image will result in an error when trying to move the position of the image.
 
 Please report any issues you experience to the issues tab, but check to see if the issue you are experiencing hasn't already been discussed.
 
@@ -52,7 +49,6 @@ Please report any issues you experience to the issues tab, but check to see if t
 * Constant BPM mode. (for better support for most newer digital music)
 * BPM Range for the automatic beat finder (set the range you want the bpm to be set to for higher or lower bpm limits)
 * Button in track menu to listen to the song with beat ticks
-* RGB selector for custom cassette color. (Next Update)
 * Visual Beat editor (similar to the base game's, but with some extra features like beat snapping, this will take a while and wont be added until much later)
 
 ## Build Instructions
