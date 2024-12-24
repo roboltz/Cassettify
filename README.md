@@ -68,17 +68,19 @@ py -3.12 -m venv .venv
 ```console
 .venv\Scripts\activate
 ```
-You should now see (.venv) to the far right of the console prefixing the path.
+You should now see (.venv) to the far left of the console prefixing the path.
 
 5. Make sure pip is updated:
 ```console
 py -m pip install --upgrade pip
 ```
-6. Install all required libraries from the requirements.txt file:
+6.  Install all required libraries from the requirements.txt file:
 ```console
 py -m pip install -r requirements.txt
 ```
-7. You can either:
+7.  Read the important_note.txt file in the "extra" folder and follow the instructions on there.
+
+8. You can either:
 Run python through the Run.py file:
 ```console
 py Run.py
@@ -91,4 +93,4 @@ py -m nuitka --standalone --enable-plugin=tk-inter --mingw64 --windows-icon-from
 ```
 If you have not run the Nuitka compiler before, it will take a while.
 After compiling, delete the App.build folder that is created in the source code. There is also a App.dist folder that is created as well. This is what holds the compiled executable, and is named "App.exe".
-The executable should still NOT work properly yet. Copy every other folder from the main source code folder into App.dist EXCEPT .venv, App.py, and requirements.txt. Now you can remove the App.dist folder from the source code and rename it and the executable to whatever you want (as long as the executable keeps the .exe suffix)
+The executable should still NOT work properly yet. Copy every other folder except for the "extra" and ".venv" folder from the main source code folder into App.dist. You do not have to do anything with the "extra" or ".venv" folder or the files that are not held in a folder. After doing that, App.exe inside of the App.dist folder should be able to run, as long as the other files in App.dist stay there and App.exe is not moved outside of the folder.
