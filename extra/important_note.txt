@@ -1,0 +1,6 @@
+For users using the App.py file in source or compiling: replace utils.py from pydub with the one in this folder.
+the utils.py file you need to replace can be found in the .venv folder at .venv/Lib/site-packages/pydub. 
+DO NOT ATTEMPT TO REPLACE UTILS.PY IN THE BASE ENVIORNMENT THAT PYTHON COMES WITH!
+
+The purpose of using this is to make the pydub library use the ffmpeg.exe file in the ffmpeg folder instead of trying to use ffmpeg from the system.
+This makes it so that the user doesn't have to install ffmpeg on their computer to use the app.
