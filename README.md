@@ -93,4 +93,4 @@ py -m nuitka --standalone --enable-plugin=tk-inter --mingw64 --windows-icon-from
 ```
 If you have not run the Nuitka compiler before, it will take a while.
 After compiling, delete the App.build folder that is created in the source code. There is also a App.dist folder that is created as well. This is what holds the compiled executable, and is named "App.exe".
-The executable should still NOT work properly yet. Copy every other FOLDER from the main source code folder into App.dist. Do not do anything with the files that are not held in a folder. After doing that. App.exe inside of the App.dist folder should be able to run, as long as the other files in App.dist stay there and App.exe is not moved outside of the folder.
+The executable should still NOT work properly yet. Copy every other folder except for the "extra" folder from the main source code folder into App.dist. You do not have to do anything with the "extra" folder or the files that are not held in a folder. After doing that, App.exe inside of the App.dist folder should be able to run, as long as the other files in App.dist stay there and App.exe is not moved outside of the folder.
