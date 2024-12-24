@@ -68,17 +68,19 @@ py -3.12 -m venv .venv
 ```console
 .venv\Scripts\activate
 ```
-You should now see (.venv) to the far right of the console prefixing the path.
+You should now see (.venv) to the far left of the console prefixing the path.
 
 5. Make sure pip is updated:
 ```console
 py -m pip install --upgrade pip
 ```
-6. Install all required libraries from the requirements.txt file:
+6.  Install all required libraries from the requirements.txt file:
 ```console
 py -m pip install -r requirements.txt
 ```
-7. You can either:
+7.  Read the important_note.txt file in the "extra" folder and follow the instructions on there.
+
+8. You can either:
 Run python through the Run.py file:
 ```console
 py Run.py
