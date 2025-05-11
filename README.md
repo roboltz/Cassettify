@@ -89,7 +89,7 @@ Make sure the enviornment is activated before doing this! the enviornment will d
 
 Or compile the app:
 ```console
-py -m nuitka --standalone --enable-plugin=tk-inter --mingw64 --windows-icon-from-ico=images/icon.ico App.py
+py -m nuitka --standalone --deployment --enable-plugin=tk-inter --mingw64 --windows-icon-from-ico=images/icon.ico App.py
 ```
 If you have not run the Nuitka compiler before, it will take a while.
 After compiling, delete the App.build folder that is created in the source code. There is also a App.dist folder that is created as well. This is what holds the compiled executable, and is named "App.exe".
