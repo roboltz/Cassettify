@@ -7,7 +7,7 @@ import pygame
 import json
 import random, string
 from pydub import AudioSegment
-import pydub
+import threading
 
 # Initializes pygame which handles music playback
 pygame.init()
@@ -48,10 +48,13 @@ class App(customtkinter.CTk):
         customtkinter.FontManager.load_font("font/pixelated/pixelated.ttf")
         self.text_font = customtkinter.CTkFont("Pixelated Regular", 20)
 
+        self.VERSION = "V0.1.4-A"
+
         # runs sidebar() method for options on the left side of the screen
         self.sidebar()
 
         # Defining variables
+
         self.current_page = None
         self.selected_music_file = None
         self.current_music_file = None
@@ -101,11 +104,14 @@ class App(customtkinter.CTk):
         self.viewable_beats = None
         self.beat_list_textbox = None
         self.beat_list_scrollbar = None
+        self.progress_bar = None
 
         self.entered_start_loop = None
         self.entered_end_loop = None
         self.loop_start_entry = None
         self.loop_end_entry = None
+
+        self.child_states = []
 
 
     # Creates an interactable sidebar on the left side of the screen
@@ -123,6 +129,8 @@ class App(customtkinter.CTk):
         sidebar_icon_label.place(x=25, y=25)
         title_label = customtkinter.CTkLabel(sidebar_frame, width=149.5, text="CASSETTIFY", font=self.text_font)
         title_label.place(x=0, y=10)
+        version_label = customtkinter.CTkLabel(sidebar_frame, width=149.5, text=self.VERSION, font=self.text_font)
+        version_label.place(x=0, y=550)
 
         # Buttons for changing screen
         config = customtkinter.CTkButton(sidebar_frame, width=149.5, height=30, text="Config", border_width=0, corner_radius=0, font=self.text_font, command=self.config_page)
@@ -510,7 +518,7 @@ class App(customtkinter.CTk):
 
         # Button to Find a song's beats, only avaliable to press 
         # when the user has selected a song in the config page
-        self.find_beat_button = customtkinter.CTkButton(track_frame, width=100, height=30, text="Find Beats", border_width=0, corner_radius=5, font=self.text_font, state="disabled", command=self.find_beats)
+        self.find_beat_button = customtkinter.CTkButton(track_frame, width=100, height=30, text="Find Beats", border_width=0, corner_radius=5, font=self.text_font, state="disabled", command=self.start_beats_threading)
         self.find_beat_button.place(x=45, y=20)
         if self.current_music_file:
             self.find_beat_button.configure(state="normal")
@@ -529,49 +537,36 @@ class App(customtkinter.CTk):
         self.beat_list_scrollbar = customtkinter.CTkScrollbar(self.current_page, command=self.beat_list_textbox.yview)
         self.beat_list_scrollbar.place(x=250, y=80)
 
-        # Looping section for setting starting and stopping points for the cassette
-        looping_label = customtkinter.CTkLabel(track_frame, width=100, height=30, text="Looping", font=self.text_font)
-        looping_label.place(x=505, y=20)
-
-        loop_start_label = customtkinter.CTkLabel(track_frame, width=100, height=30, text="Start Beat #", font=self.text_font)
-        loop_start_label.place(x=425, y=50)
-
-        loop_end_label = customtkinter.CTkLabel(track_frame, width=100, height=30, text="End Beat #", font=self.text_font)
-        loop_end_label.place(x=575, y=50)
-
-        self.loop_start_entry = customtkinter.CTkEntry(track_frame, font=self.text_font, width=50, state="disabled")
-        self.loop_start_entry.place(x=450, y=80)
-
-        self.loop_end_entry = customtkinter.CTkEntry(track_frame, font=self.text_font, width=50, state="disabled")
-        self.loop_end_entry.place(x=600, y=80)
-
-        self.apply_loop_button = customtkinter.CTkButton(track_frame, width=100, height=30, text="Apply Loop", border_width=0, corner_radius=5, font=self.text_font, state="disabled", command=self.apply_loop)
-        self.apply_loop_button.place(x=500, y=140)
-
-        self.preview_loop_button = customtkinter.CTkButton(track_frame, width=100, height=30, text="Preview Loop", font=self.text_font, border_width=0, corner_radius=5, state="disabled", command=self.preview_loop)
-        self.preview_loop_button.place(x=490, y=200)
-
         # Handles returning screen to previous state after the user clicks off the screen and then returns
         if self.beatList:
             self.find_beat_label.configure(text="Found  " + str(len(self.beatList)) + "  Beats")
-            self.apply_loop_button.configure(state="normal")
-            self.loop_end_entry.configure(state="normal")
-            self.loop_start_entry.configure(state="normal")
             self.preview_beat_checkbox.configure(state="normal")
-            if self.loop_start != 0 and self.loop_end != self.song_duration:
-                self.preview_loop_button.configure(state="normal")
-            self.loop_start_entry.insert("end", self.entered_start_loop)
-            self.loop_end_entry.insert("end", self.entered_end_loop )
             self.beat_list_textbox.configure(state="normal")
             self.beat_list_textbox.insert('end', self.viewable_beats)
             self.beat_list_textbox.configure(state="disable")
             self.beat_list_textbox.configure(yscrollcommand=self.beat_list_scrollbar.set)
 
 
+    def start_beats_threading(self):
+
+        self.progress_bar = customtkinter.CTkProgressBar(self, orientation="horizontal", mode="indeterminate")
+        self.progress_bar.place(x=196, y=300)
+        self.progress_bar.set(0)
+        self.progress_bar.start()
+
+        self.progress_label = customtkinter.CTkLabel(self.current_page, width=self.progress_bar.cget("width"), height=30, text="Finding Beats", font=self.text_font)
+        self.progress_label.place(x=45, y=310)
+
+        # Creates a seperate thread for finding beats so the application doesn't freeze
+        beats_thread = threading.Thread(target=self.find_beats)
+        beats_thread.start()
+        
+
     def find_beats(self):
+        self.disable_interactables()
         # Runs the Essentia beat tracker with the current song to automatically find all of the beat positions in the song
         self.run_command('beat_finder\\essentia_streaming_beattracker_multifeature_mirex2013.exe "' + self.current_music_file + '" beat_finder\\output\\beat.txt')
-        
+
         # Formats the data from the beat tracker to be able to use as a list of integers
         with open("beat_finder\\output\\beat.txt", "r") as beats:
             self.beatList = beats.readlines()
@@ -588,17 +583,16 @@ class App(customtkinter.CTk):
         # Show the number of beats found on the beat label
         self.find_beat_label.configure(text="Found  " + str(len(self.beatList)) + "  Beats")
 
-        # Enable looping after finding beats
-        self.apply_loop_button.configure(state="normal")
-        self.loop_end_entry.configure(state="normal")
-        self.loop_start_entry.configure(state="normal")
-
-        self.create_beat_preview()
-
-        self.show_beat_list()
+        beats_thread = threading.Thread(target=self.show_beat_list)
+        beats_thread.start()
+        beats_thread.join()
+        self.progress_label.destroy()
+        self.progress_bar.destroy()
 
     # Creates list of beats in the scrollable textbox
     def show_beat_list(self):
+        self.progress_label.configure(text="Creating List")
+
         self.viewable_beats = "Beat      Time\n"
         for i in range(self.num_beats):
             self.viewable_beats += str(i+1) + "                  " + self.beatList[i] + "\n"
@@ -607,9 +601,14 @@ class App(customtkinter.CTk):
         self.beat_list_textbox.insert('end', self.viewable_beats)
         self.beat_list_textbox.configure(state="disabled")
         self.beat_list_textbox.configure(yscrollcommand=self.beat_list_scrollbar.set)
+        beats_thread = threading.Thread(target=self.create_beat_preview)
+        beats_thread.start()
+        
 
     # Creates a song file with beat sounds
     def create_beat_preview(self):
+        self.progress_label.configure(text="Creating Beat Preview")
+
         if os.path.exists("beat_previewer\\wav_song\\input.wav"):
             os.remove("beat_previewer\\wav_song\\input.wav")
         self.run_command("ffmpeg\\ffmpeg.exe -i \"" + self.current_music_file + "\" beat_previewer\\wav_song\\input.wav")
@@ -627,6 +626,8 @@ class App(customtkinter.CTk):
         mixer.music.unload()
         main_song.export("beat_previewer\\output\\output.wav", format="wav")
         self.preview_beat_checkbox.configure(state="normal")
+        self.re_enable_interactables()
+        self.progress_bar.stop()
 
     # Plays song with beat sounds
     def preview_beats(self):
@@ -691,11 +692,19 @@ class App(customtkinter.CTk):
     # Handles combining all nessesary data into a .robobeat file
     def export_robobeat_file(self):
         # Asks user for destination of file
-        exported_filename = customtkinter.filedialog.asksaveasfilename(filetypes=[("ROBOBEAT File", "*.robobeat")], initialdir=os.path.join(os.path.expanduser("~"), "Downloads"))
+        exported_filename = customtkinter.filedialog.askdirectory(initialdir=os.path.join(os.path.expanduser("~"), "Downloads"))
+
+        if not os.path.exists(os.path.join(exported_filename, self.song_title + ".robobeat")):
+            exported_filename = os.path.join(exported_filename, self.song_title + ".robobeat")
+        else:
+            i = 0
+            while os.path.isdir(exported_filename):
+                i += 1
+                if not os.path.exists(os.path.join(exported_filename, self.song_title + "(" + str(i) + ").robobeat")):
+                    exported_filename = os.path.join(exported_filename, self.song_title + "(" + str(i) + ").robobeat")
 
         # Runs the following only if the user has selected a destination
         if exported_filename:
-            exported_filename = os.path.splitext(exported_filename)[0] + ".robobeat"
             # Converts .flac music files into .wav as robobeat does not support .flac
             if self.current_music_file.endswith(".flac"):
                 self.run_command("ffmpeg\\ffmpeg.exe -i \"" + self.current_music_file + "\" ffmpeg\\flac_convert_output\\output.wav")
@@ -833,8 +842,40 @@ class App(customtkinter.CTk):
         if mixer.music.get_busy():
                 mixer.music.stop()
     
+    def disable_interactables(self):
+        # Disables all interactable widgets
+        self.child_states = []
+        for frame in self.winfo_children():
+            for widget in frame.winfo_children():
+                try:
+                    if widget.cget("state") == "normal" and type(widget) != customtkinter.CTkLabel:
+                        widget.configure(state="disabled")
+                        self.child_states.append(widget)
+                except ValueError:
+                    pass
+
+    def add_disabled_interactables(self, interactables:tuple):
+        # Add a list of interactable objects to disable
+        # and add to list to be re-enabled later
+        for interactable in interactables:
+            try:
+                interactable.configure(state="disabled")
+                self.child_states.append(interactable)
+            except ValueError:
+                print("Item", str(interactable), "does not have a \"disabled\" state.")
+
+    def re_enable_interactables(self):
+        # Re-enable disabled interaactable widgets
+        for widget in self.child_states:
+            try:
+                widget.configure(state="normal")
+            except:
+                pass
+        
+
     # Handles running and returning console commands
     def run_command(self,cmd):
+        # Runs command and returns interactable states to normals
         try:
             result = subprocess.check_output(cmd, shell=True, universal_newlines=True, encoding="utf-8")
             return result.strip()
