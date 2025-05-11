@@ -58,7 +58,7 @@ These instructions are designed for people contributing to the repository and ar
 ```console
 git clone https://github.com/roboltz/Cassettify.git
 ```
-2. Open your command prompt if you haven't already and change your directory into the downloaded folder. If you installed the source code manually you will need to unzip it first.
+2. Open your command prompt if you haven't already and change your directory into the downloaded folder with the cd command. If you installed the source code manually you will need to unzip it first.
 
 3. download the latest version of [Python 3.12](https://www.python.org/downloads) and run this command to create an enviornment in the folder to store the libraries:
 ```console
@@ -87,10 +87,10 @@ py Run.py
 ```
 Make sure the enviornment is activated before doing this! the enviornment will deactivate every time you close the command prompt.
 
-Or compile the app:
+Or compile the app by installing the compiler pyinstaller and then running the compiler:
 ```console
-py -m nuitka --standalone --deployment --enable-plugin=tk-inter --mingw64 --windows-icon-from-ico=images/icon.ico App.py
+py -m pip install pyinstaller
+pyinstaller --clean --noupx --noconsole --icon=images/icon.ico App.py
 ```
-If you have not run the Nuitka compiler before, it will take a while.
-After compiling, delete the App.build folder that is created in the source code. There is also a App.dist folder that is created as well. This is what holds the compiled executable, and is named "App.exe".
-The executable should still NOT work properly yet. Copy every other folder except for the "extra" and ".venv" folder from the main source code folder into App.dist. You do not have to do anything with the "extra" or ".venv" folder or the files that are not held in a folder. After doing that, App.exe inside of the App.dist folder should be able to run, as long as the other files in App.dist stay there and App.exe is not moved outside of the folder.
+After compiling, delete the build folder that is created in the source code. There is also a dist folder that is created as well. This is what holds the compiled executable, and is named "App.exe".
+The executable should still NOT work properly yet. Copy every other folder except for the "extra" and ".venv" folder from the main source code folder into dist. You do not have to do anything with the "extra" or ".venv" folder or the files that are not held in a subfolder. After doing that, App.exe inside of the dist folder should be able to run, as long as the other files in dist stay there and App.exe is not moved outside of the folder. The icon for the executable may not show, if that happens move the executable outside of the folder for a second to update it. You will need to put it back in the folder after so it can run.
