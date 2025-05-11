@@ -585,9 +585,6 @@ class App(customtkinter.CTk):
 
         beats_thread = threading.Thread(target=self.show_beat_list)
         beats_thread.start()
-        beats_thread.join()
-        self.progress_label.destroy()
-        self.progress_bar.destroy()
 
     # Creates list of beats in the scrollable textbox
     def show_beat_list(self):
@@ -603,6 +600,9 @@ class App(customtkinter.CTk):
         self.beat_list_textbox.configure(yscrollcommand=self.beat_list_scrollbar.set)
         beats_thread = threading.Thread(target=self.create_beat_preview)
         beats_thread.start()
+        beats_thread.join()
+        self.progress_label.destroy()
+        self.progress_bar.destroy()
         
 
     # Creates a song file with beat sounds
