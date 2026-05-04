@@ -1,3 +1,5 @@
+This app is currently being remade! https://github.com/roboltz/Cassettify-Remake
+
 # Cassettify
 
 Cassettify is an improvement over my old [EasyCassetteImages](https://github.com/roboltz/EasyCassetteImages) app
